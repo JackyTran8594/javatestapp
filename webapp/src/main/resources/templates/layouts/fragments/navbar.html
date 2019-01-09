@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Add js,css here -->
+</head>
+<body>
+
+<!-- Main navbar -->
+<div th:fragment="navbar" class="navbar navbar-default header-highlight">
+    <div class="navbar-header">
+        <!--<a class="navbar-brand" href="/"><img src="/assets/images/cael_logo_idx.png" alt=""></a>-->
+        <a class="navbar-brand" href="/"><img src="/assets/images/logo_light.png" alt=""></a>
+
+        <ul class="nav navbar-nav visible-xs-block">
+            <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+            <li><a class="sidebar-mobile-main-toggle toggleSitebar"><i class="icon-paragraph-justify3"></i></a></li>
+        </ul>
+    </div>
+
+    <div class="navbar-collapse collapse" id="navbar-mobile">
+        <ul class="nav navbar-nav">
+            <li><a class="sidebar-control sidebar-main-toggle hidden-xs toggleSitebar"><i
+                    class="icon-paragraph-justify3"></i></a>
+            </li>
+        </ul>
+
+        <div class="navbar-right">
+            <ul class="nav navbar-nav">
+                <li style="display: none"><span class="currentLang" id="currentLang" th:data-currentLang="${#locale}"></span></li>
+                <li class="dropdown language-switch hidden-sm">
+                    <a class="dropdown-toggle legitRipple" data-toggle="dropdown" aria-expanded="false">
+                        <img ng-src="{{currFlag}}" alt="{{currName}}" class="position-left">
+                        <span>{{currName}}</span> <i class="caret"></i>
+                    </a>
+
+                    <ul class="dropdown-menu" id="dropDownLang">
+                        <li ng-repeat="item in lstLang" class="{{item.class}}">
+                            <a ng-click="changeLang(item.lang)">
+                                <img ng-src="/assets/images/flags/{{item.Flag}}" alt="{{item.Name}}"> <span>{{item.Name}}</span></a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="dropdown dropdown-user">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        <img src="/assets/images/placeholder.jpg" alt="">
+                        <span th:text="${session.userSmanID}"></span>
+                        <i class="caret"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a th:href="${'/user-information/' + session.userSmanID}"><i class="icon-user"></i> <span
+                                th:text="#{layout.navbar.userInformation}"></span> </a></li>
+                        <li><a href="/logout"><i class="icon-switch2"></i> <span th:text="#{layout.navbar.logout}"></span>
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+      $(document).ready(function () {
+        console.log("------navbar ready------");
+
+//        $.ajax({
+//          type: 'GET',
+//          url: '/language/getAll',
+//          dataType: 'json',
+//          success: function(responseData, textStatus, jqXHR) {
+//            var currentLang = $("#currentLang").attr('data-currentLang');
+//            var option = "";
+//            $('#dropDownLang').html("");
+//            var options = "";
+//            $.each(responseData, function (i, item) {
+//              var CultureInfo = item.CultureInfo;
+//              var tmp = CultureInfo.split("-");
+//              if(tmp[0] == currentLang){
+//                $("#currentLang").html(item.Name);
+//                options+= "<li class=\"active\"><a class=\"english\"><img src=\"/assets/images/flags/" + item.Flag.toLowerCase() + "\"><span>" + item.Name + "</span></a></li>";
+//              }else{
+//                options+= "<li ng-click=\"changeLang('en')\"><a class=\"english\" ng-click=\"changeLang('" + tmp[0] + "')\"><img src=\"/assets/images/flags/" + item.Flag.toLowerCase() + "\"><span>" + item.Name + "</span></a></li>";
+//              }
+//
+//            });
+//            $('#dropDownLang').html(options);
+//          },
+//          error: function (responseData, textStatus, errorThrown) {
+//            console.log(responseData);
+//            console.log(errorThrown);
+//          }
+//        });
+
+      });
+    </script>
+
+</div>
+<!-- /main navbar -->
+</body>
+</html>
