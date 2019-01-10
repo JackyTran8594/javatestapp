@@ -1,4 +1,7 @@
-UserWebApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+UserWebApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider, tmhDynamicLocaleProvider) {
+
+  
+  tmhDynamicLocaleProvider.localeLocationPattern('/assets/js/core/libraries/angularjs/angular-locale/i18n/angular-locale_{{locale}}.js')
 
   // $urlRouterProvider.otherwise('/');
 
