@@ -70,9 +70,9 @@ function onLogin() {
     //Set cookies
     eraseCookie("siteId");
     eraseCookie("language");
-
-
-
+    // vutt
+    eraseCookie("cultureInfo");
+    //
     createCookie("siteId", $("#siteId").val(), 365);
     // createCookie("language", $("#language").val(), 365);
 
