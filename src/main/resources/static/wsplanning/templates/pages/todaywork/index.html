@@ -80,7 +80,7 @@
                             <tr ng-repeat="item in lstData">
                                 <td style="width: 20%;">
                                     <!-- {{item.ServiceDate | utcToLocal:'dd.MM.yy - hh.mm a'}}<br/> -->
-                                    {{item.ServiceDate | date}}<br />
+                                    {{item.ServiceDate | date: 'medium'}}<br />
                                     <span class="{{item.WorkOrderStatus| titleCase}}">{{item.WorkOrderStatus}}<br /></span>
                                     {{item.WorkOrderNo}}<br />
                                     <!-- {{item.Mileage | number}}<br /> -->
