@@ -1,4 +1,4 @@
-UserWebApp.controller('appCtrl', function ($scope, $rootScope, HttpService, $translate, $location, $filter, $state) {
+UserWebApp.controller('appCtrl', function ($scope, $rootScope, HttpService, $translate, $location, $filter, $state, tmhDynamicLocale) {
   console.log("--------appCtrl-------------");
 
   $rootScope.lang = $("#currentLang").attr('data-currentLang');
@@ -9,20 +9,31 @@ UserWebApp.controller('appCtrl', function ($scope, $rootScope, HttpService, $tra
 
   $scope.workorders = function () {
     $(".toggleSitebar").click();
-    $state.go('app.main.workorder', {locale: $rootScope.lang});
+    $state.go('app.main.workorder', { locale: $rootScope.lang });
   }
 
   $scope.todayWork = function () {
     $(".toggleSitebar").click();
-    $state.go('app.main.todaywork', {locale: $rootScope.lang});
+    $state.go('app.main.todaywork', { locale: $rootScope.lang });
   }
 
-  $scope.changeLang = function (lang) {
-    console.log("---changeLang: " + lang);
+  // $scope.changeLang = function (lang) {
+  //   console.log("---changeLang: " + lang);
 
-    //$state.go($state.current, {locale: lang}, {reload: false});
+  //   //$state.go($state.current, {locale: lang}, {reload: false});
 
-    $state.transitionTo($state.current, {locale: lang}, {
+  //   $state.transitionTo($state.current, {locale: lang}, {
+  //     reload: true, inherit: false, notify: true
+  //   });
+  // }
+
+  $scope.changeLang = function (item) {
+    console.log("---changeLang: " + item.lang);
+
+    // vutt
+    tmhDynamicLocale.set(item.CultureInfo.toLowerCase());
+    //
+    $state.transitionTo($state.current, { locale: item.lang }, {
       reload: true, inherit: false, notify: true
     });
   }

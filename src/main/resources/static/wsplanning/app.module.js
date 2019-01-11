@@ -64,8 +64,12 @@ UserWebApp.run(['$rootScope', 'uiSelect2Config', '$translate', 'tmhDynamicLocale
     min: jQuery.validator.format($translate.instant('validatorMin')),
   });
 }])
-  .run(function ($rootScope, $location, $state, $stateParams, $transitions, $translate, HttpService) {
+  .run(function ($rootScope, $location, $state, $stateParams, $transitions, $translate, HttpService, tmhDynamicLocale, $cookies) {
+	
+	var cookie = $cookies.get('cultureInfo');
 
+   
+	
     $transitions.onStart({}, function (trans) {
       console.log("statechange start " + trans._targetState._params.locale);
     });
@@ -80,7 +84,7 @@ UserWebApp.run(['$rootScope', 'uiSelect2Config', '$translate', 'tmhDynamicLocale
         HttpService.postData('/language', { "lang": newLange }).then(function (response) {
           console.log(response);
           $translate.use(newLange);
-
+		  // tmhDynamicLocale.set(cookie);
           $rootScope.$broadcast("changeLanguage", {
             lang: newLange
           });
