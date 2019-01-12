@@ -1,19 +1,23 @@
 UserWebApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider, tmhDynamicLocaleProvider) {
 
-  
+
   tmhDynamicLocaleProvider.localeLocationPattern('/assets/js/core/libraries/angularjs/angular-locale/i18n/angular-locale_{{locale}}.js')
 
   // $urlRouterProvider.otherwise('/');
 
   $urlRouterProvider.otherwise(function ($rootScope, $injector, $location) {
-    var lang = $("#currentLang").attr('data-currentLang');
-    return "/" + lang + "/todaywork";
+    // var lang = $("#currentLang").attr('data-currentLang');
+
+    // vutt
+    var lang = $("#currentLang").attr('data-currentLang').split("-");
+    // end
+    return "/" + lang[0] + "/todaywork";
   });
 
   console.log("------$urlRouterProvider-----");
   $stateProvider
 
-  // HOME STATES AND NESTED VIEWS ========================================
+    // HOME STATES AND NESTED VIEWS ========================================
     .state('app', {
       abstract: true,
       url: '/{locale}'
