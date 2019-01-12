@@ -9,7 +9,7 @@ UserWebApp.config(function ($stateProvider, $urlRouterProvider, $locationProvide
     // var lang = $("#currentLang").attr('data-currentLang');
 
     // vutt
-    var lang = $("#currentLang").attr('data-currentLang').split("-");
+    var lang = $("#currentLang").attr('data-currentLang').split("_");
     // end
     return "/" + lang[0] + "/todaywork";
   });
