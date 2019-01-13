@@ -170,7 +170,9 @@ UserWebApp.config(['$translateProvider', function ($translateProvider) {
   $translateProvider.translations('vi', translationsVI);
 
   // Get current language
-  var currentLang = $('.currentLang').attr('data-currentLang');
+  // var currentLang = $('.currentLang').attr('data-currentLang');
+  var temp = $('.currentLang').attr('data-currentLang').split("_");
+  var currentLang = temp[0];
   currentLang = currentLang && currentLang !== '' ? currentLang : 'en';
 
   // Set language
