@@ -1,7 +1,12 @@
 package com.wsplanning.webapp.controllers;
 
+import com.google.common.net.HttpHeaders;
 import com.wsplanning.webapp.clients.ASMasterClient;
+import com.wsplanning.webapp.clients.CustomerClient;
+import com.wsplanning.webapp.clients.EmployeesClient;
 import com.wsplanning.webapp.clients.StampingClient;
+import com.wsplanning.webapp.clients.VehiclesClient;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,6 +33,15 @@ public class CommonController extends BaseController {
 
   @Autowired
   protected StampingClient stampingClient;
+
+  @Autowired
+  protected EmployeesClient employeesClient;
+
+  @Autowired
+  protected CustomerClient customerClient;
+
+  @Autowired
+  protected VehiclesClient vehiclesClient;
 
   @Autowired
   protected HttpSession session;
@@ -95,11 +109,10 @@ public class CommonController extends BaseController {
     }
   }
 
-
   @PostMapping("/language")
   @ResponseBody
   public ResponseEntity getWO(@RequestBody Map<String, String> params, HttpServletRequest request,
-                              HttpServletResponse response) {
+      HttpServletResponse response) {
     try {
       String lang = params.get("lang");
       Locale userLocale = Locale.forLanguageTag(lang);
@@ -180,10 +193,50 @@ public class CommonController extends BaseController {
     }
   }
 
+  @GetMapping("/site/getServiceAdvisors")
+  public ResponseEntity getServiceAdvisors() {
+    try {
+      String rtn = employeesClient.getServiceAdvisors(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
+
   @GetMapping("/site/getStamping")
   public ResponseEntity getStamping() {
     try {
       String rtn = stampingClient.getStamping(getToken());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
+
+  @GetMapping("/site/getChargeCats")
+  public ResponseEntity getChargeCats() {
+    try {
+      String rtn = siteClient.getChargeCats(getToken());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
+
+  @GetMapping("/site/getVehicles")
+  public ResponseEntity getVehicles(@RequestParam(name = "skey") String skey) {
+    try {
+      String rtn = vehiclesClient.getVehicles(skey);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
+
+  @GetMapping("/site/getCustomers")
+  public ResponseEntity getCustomers(@RequestParam(name = "skey") String skey, @RequestParam(name = "custNo") String custNo) {
+    try {
+      String rtn = customerClient.getCustomers(skey, custNo);
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);

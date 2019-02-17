@@ -31,25 +31,27 @@ function loadLang() {
     url: '/language/getAll',
     dataType: 'json',
     success: function (responseData, textStatus, jqXHR) {
-
       var option = "";
-      //$('#language').html("");
-      $.each(responseData, function (i, item) {
-        // vutt
-        var CultureInfo = item.CultureInfo.toLowerCase();
-        //
-        
-        // var CultureInfo = item.CultureInfo;
-        // var tmp = CultureInfo.split("-");
-        option = "";
-        // option += "<option value=\"" + tmp[0] + "\" data-thumbnail=\"/assets/images/flags/" + item.Flag.toLowerCase() + "\">" + item.Name + "</option>";
-        // $('#language').append(option);
+      localStorage.setItem('cultureInfo',JSON.stringify(responseData));
 
-        //vutt
-        option += "<option value=\"" + CultureInfo + "\" data-thumbnail=\"/assets/images/flags/" + item.Flag.toLowerCase() + "\">" + item.Name + "</option>";
-        $('#language').append(option);
-        //
+
+      $.each(responseData, function (i, item) {
+        var CultureInfo = item.CultureInfo;
+        var tmp = CultureInfo.split("-");
+        $('#language').append($('<option>', {
+          value: tmp[0],
+          text: item.Name
+        }));
       });
+
+      // $.each(responseData, function (i, item) {
+      //
+      //   var CultureInfo = item.CultureInfo;
+      //   var tmp = CultureInfo.split("-");
+      //   option = "";
+      //   option += "<option value=\"" + tmp[0] + "\" data-thumbnail=\"/assets/images/flags/" + item.Flag.toLowerCase() + "\">" + item.Name + "</option>";
+      //   $('#language').append(option);
+      // });
 
       var selected = readCookie("language");
       if (selected != "") {
@@ -74,17 +76,9 @@ function onLogin() {
     //Set cookies
     eraseCookie("siteId");
     eraseCookie("language");
-    // vutt
-    eraseCookie("cultureInfo");
-    //
+ 
     createCookie("siteId", $("#siteId").val(), 365);
-    // createCookie("language", $("#language").val(), 365);
-
-    // vutt
-    var temp = $('#language').val().split("-");
-    createCookie("language", temp[0], 365);
-    createCookie("cultureInfo", $('#language').val(), 365);
-    //
+    createCookie("language", $("#language").val(), 365);
 
     common.btnLoading($("#btnLogin"), true);
     $("#frmLogin").submit();

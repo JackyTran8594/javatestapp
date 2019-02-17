@@ -1,10 +1,52 @@
 var translationsEN = {
   workOrderTitle: "WorkOrder Management",
   todayWorkTitle: "Today Work Management",
+  allWorkTitle: "All Work Management",
+  unscheduledWorkTitle: "Unscheduled Work Management",
+  withSubcontractorTitle: "Workorders With Subcontractor Management",
+  withMOTTitle: "Workorder with MOT Management",
+  postponedWorkTitle: "Postponed Work Management",
+  withTireChangeTitle: "Workorder With Tire Changes Management",
+  withBOTitle: "Workorder With BO Parts Management",
+  calendarViewTitle: "Calendar View Management",
+  taskListTitle: "Task List Management",
+  offerTitle: "Offer Management",
+  replacementVehicleTitle: " Replacement Vehicle Planning Management",
+  newWOTitle:" New Workorder",
+
   //breadcrumb
   breadcrumbHome: "Home",
   breadcrumbWorkOrder: "WorkOrder",
   breadcrumbTodayWork: "Today Work",
+  breadcrumbOffer: "Offer",
+  breadcrumbPostponedWO: "Postponed WO",
+  breadcrumbUnScheduledWO: "UnScheduled WO",
+  breadcrumbWithBO: "With BO",
+  breadcrumbWithMOT: "With MOT",
+  breadcrumbWithSubcontractor: "With Subcontractor",
+  breadcrumbWithTire: "With Tire",
+  breadcrumbWorkDetail: "Work Detail",
+  breadcrumbWorkNew: "New WorkOrder",
+  breadcrumbAllWork: "All Work",
+  breadcrumbUnscheduledWork: "Unscheduled Work",
+  breadcrumbTodayWork: "Today Work",
+  breadcrumbWithSubcontractor: "Workorders With Subcontractor",
+  breadcrumbWithMOT: "Workorder with MOT",
+  breadcrumbPostponedWork: "Postponed Work",
+  breadcrumbWithTire: "Workorder With Tire Changes",
+  breadcrumbWithBO: "Workorder With BO parts",
+  breadcrumbCalendarView: "Calendar View",
+  breadcrumbTaskList: "Task List",
+  breadcrumbOffer: "Offer",
+  breadcrumbPostponedWO: "Postponed WO",
+  breadcrumbUnScheduledWO: "UnScheduled WO",
+  breadcrumbWithBO: "With BO",
+  breadcrumbWithMOT: "With MOT",
+  breadcrumbWithSubcontractor: "With Subcontractor",
+  breadcrumbWithTire: "With Tire",
+  breadcrumbReplacementVehicle: "Replacement Vehicle Planning",
+  breadcrumbNewWO: "New Workorder",
+
 
   //common
   btnAdd: "Add",
@@ -77,8 +119,43 @@ var translationsEN = {
   trans: 'Transaction Types',
   department: 'Department',
   serv: 'Serv. advisor',
+  shiftId: 'Shift ID',
   visitReason: 'Visit reason',
   searchWo: 'Search workorders',
+  search:'Search',
+  pleaseSelect: '--Please select--',
+  fromDate: 'From date',
+  toDate: 'To date',
+  myWo: 'Only my workorders',
+  WoHeader: 'Workorder Header',
+  WoJob: 'Workorder Job',
+  ServiceDate: 'ServiceDate',
+  ExpectedDelivery: "Expected delivery",
+  CheckInDate: 'Check In Time',
+  ExecutionDate: 'Execution Time',
+  ChargeCats: 'Job Charge Category',
+  JobCategory: 'Job Category',
+  Payer: 'Payer',
+  JobDepartment: 'Job Department',
+  JobType: 'Job Type',
+  JobTitle: 'Job Title',
+  CustomerComplaint: 'Customer complaint',
+  BookTireChangeLot: "Book Tire Change Lot",
+  BookMOTlot: "Book MOT Lot",
+  CustWaiting: "Cust is Waiting",
+  Rework: "Rework",
+  Mileage: "Current mileage",
+  NextMOT: "Next MOT",
+
+  //Contract
+  FirstRegistrationDate: "First registration date",
+  EngineNumber: "Engine number",
+
+  //Customer
+  Address: "Address",
+  Phone: "Phone",
+  CustomerGroup: "Customer group",
+  AccountGroup: "Customer group",
 };
 
 var translationsVI = {
@@ -88,6 +165,8 @@ var translationsVI = {
   breadcrumbHome: "Home",
   breadcrumbWorkOrder: "WorkOrder",
   breadcrumbTodayWork: "Today Work",
+  breadcrumbWorkDetail: "Work Detail",
+  breadcrumbWorkNew: "New WorkOrder",
 
   //common
   btnAdd: "Thêm mới",
@@ -160,19 +239,52 @@ var translationsVI = {
   trans: 'Transaction Types',
   department: 'Department',
   serv: 'Serv. advisor',
+  shiftId: 'Shift ID',
   visitReason: 'Visit reason',
   searchWo: 'Search workorders',
+  pleaseSelect: '--Please select--',
+  fromDate: 'From date',
+  toDate: 'To date',
+  myWo: 'Only my workorders',
+  WoHeader: 'Workorder Header',
+  WoJob: 'Workorder Job',
+  ServiceDate: 'Service Date',
+  ExpectedDelivery: "Expected delivery",
+  CheckInDate: 'Check In Time',
+  ExecutionDate: 'Execution Time',
+  ChargeCats: 'Job Charge Category',
+  JobCategory: 'Job Category',
+  Payer: 'Payer',
+  JobDepartment: 'Job Department',
+  JobType: 'Job Type',
+  JobTitle: 'Job Title',
+  CustomerComplaint: 'Customer complaint',
+  BookTireChangeLot: "Book Tire Change Lot",
+  BookMOTlot: "Book MOT Lot",
+  CustWaiting: "Cust is Waiting",
+  Rework: "Rework",
+  Mileage: "Current mileage",
+  NextMOT: "Next MOT",
+
+  //Contract
+  FirstRegistrationDate: "First registration date",
+  EngineNumber: "Engine number",
+
+  //Customer
+  Address: "Address",
+  Phone: "Phone",
+  CustomerGroup: "Customer group",
+  AccountGroup: "Customer group",
 };
 
 UserWebApp.config(['$translateProvider', function ($translateProvider) {
   // Declare multi language
   $translateProvider.translations('en', translationsEN);
   $translateProvider.translations('vi', translationsVI);
+  $translateProvider.translations('de', translationsVI);
 
   // Get current language
-  // var currentLang = $('.currentLang').attr('data-currentLang');
-  var temp = $('.currentLang').attr('data-currentLang').split("_");
-  var currentLang = temp[0];
+  var currentLang = $('.currentLang').attr('data-currentLang');
   currentLang = currentLang && currentLang !== '' ? currentLang : 'en';
 
   // Set language

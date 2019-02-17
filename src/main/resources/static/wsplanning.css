@@ -398,3 +398,16 @@ form.form-label-right .control-label {
 .dropdown-notification .dropdown-content-heading {
   border-bottom: 1px solid #ddd;
 }
+
+.myTitle{
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: #cec2c2 !important;
+}
+
+.tableModal{
+  max-height: 450px;
+}

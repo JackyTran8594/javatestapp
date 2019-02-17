@@ -1,5 +1,6 @@
 package com.wsplanning.webapp.clients;
 
+import com.wsplanning.webapp.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,9 @@ public class WokOrderClient {
     String MyWO = params.get("MyWO");
     String LoadAttachment = params.get("LoadAttachment");
     String LoadAttachmentData = params.get("LoadAttachmentData");
-    String ServDateTo = params.get("ServDateTo");
+    String ServDateFrom = params.get("FromDate");
+    String ServDateTo = params.get("ToDate");
+    String shiftId = params.get("shiftId");
 
     HttpHeaders headers = new HttpHeaders();
     headers.set("Token", token);
@@ -61,6 +64,40 @@ public class WokOrderClient {
     if (StringUtils.isNotBlank(page)) {
       headers.set("Page", page);
     }
+
+    if (StringUtils.isNotBlank(shiftId)) {
+      headers.set("ShiftId", shiftId);
+    }
+    if (StringUtils.isNotBlank(DeptId)) {
+      headers.set("DeptId", DeptId);
+    }
+    if (StringUtils.isNotBlank(Receiver)) {
+      headers.set("Receiver", Receiver);
+    }
+    if (StringUtils.isNotBlank(TransactionType)) {
+      headers.set("TransactionType", TransactionType);
+    }
+    if (StringUtils.isNotBlank(VisitReasonCode)) {
+      headers.set("VisitReasonCode", VisitReasonCode);
+    }
+    if (StringUtils.isNotBlank(MyWO) && "true".equalsIgnoreCase(MyWO)) {
+      headers.set("MyWO", "true");
+    }
+    if (StringUtils.isNotBlank(LoadAttachment) && "true".equalsIgnoreCase(LoadAttachment)) {
+      headers.set("LoadAttachment", "true");
+    }
+    if (StringUtils.isNotBlank(LoadAttachmentData) && "true".equalsIgnoreCase(LoadAttachmentData)) {
+      headers.set("LoadAttachmentData", "true");
+    }
+
+    //yyyy.MM.dd
+    if (StringUtils.isNotBlank(ServDateFrom)) {
+      headers.set("ServDateFrom", Utils.formateDateAPI(ServDateFrom));
+    }
+    if (StringUtils.isNotBlank(ServDateTo)) {
+      headers.set("ServDateTo", Utils.formateDateAPI(ServDateTo));
+    }
+
     HttpEntity entity = new HttpEntity(headers);
     String url = String.format("%s?SiteId=%s&ViewName=%s&getCountOnly=%s", this.endpointUrl, siteId, viewName, "true");
     ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, new HashMap<>());
@@ -79,7 +116,9 @@ public class WokOrderClient {
     String MyWO = params.get("MyWO");
     String LoadAttachment = params.get("LoadAttachment");
     String LoadAttachmentData = params.get("LoadAttachmentData");
-    String ServDateTo = params.get("ServDateTo");
+    String ServDateFrom = params.get("FromDate");
+    String ServDateTo = params.get("ToDate");
+    String shiftId = params.get("shiftId");
 
     HttpHeaders headers = new HttpHeaders();
     headers.set("Token", token);
@@ -93,8 +132,53 @@ public class WokOrderClient {
     if (StringUtils.isNotBlank(page)) {
       headers.set("Page", page);
     }
+
+    if (StringUtils.isNotBlank(shiftId)) {
+      headers.set("ShiftId", shiftId);
+    }
+
+    if (StringUtils.isNotBlank(DeptId)) {
+      headers.set("DeptId", DeptId);
+    }
+
+    if (StringUtils.isNotBlank(Receiver)) {
+      headers.set("Receiver", Receiver);
+    }
+    if (StringUtils.isNotBlank(TransactionType)) {
+      headers.set("TransactionType", TransactionType);
+    }
+    if (StringUtils.isNotBlank(VisitReasonCode)) {
+      headers.set("VisitReasonCode", VisitReasonCode);
+    }
+    if (StringUtils.isNotBlank(MyWO) && "true".equalsIgnoreCase(MyWO)) {
+      headers.set("MyWO", "true");
+    }
+    if (StringUtils.isNotBlank(LoadAttachment) && "true".equalsIgnoreCase(LoadAttachment)) {
+      headers.set("LoadAttachment", "true");
+    }
+    if (StringUtils.isNotBlank(LoadAttachmentData) && "true".equalsIgnoreCase(LoadAttachmentData)) {
+      headers.set("LoadAttachmentData", "true");
+    }
+    if (StringUtils.isNotBlank(ServDateFrom)) {
+      headers.set("ServDateFrom", Utils.formateDateAPI(ServDateFrom));
+    }
+    if (StringUtils.isNotBlank(ServDateTo)) {
+      headers.set("ServDateTo", Utils.formateDateAPI(ServDateTo));
+    }
+
     HttpEntity entity = new HttpEntity(headers);
     String url = String.format("%s?SiteId=%s&ViewName=%s", this.endpointUrl, siteId, viewName);
+    ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, new HashMap<>());
+    return response.getBody();
+  }
+
+
+  public String detail(String token, String siteId, Map<String, String> params) {
+    String workOrderId = params.get("WorkOrderId");
+    HttpHeaders headers = new HttpHeaders();
+    headers.set("Token", token);
+    HttpEntity entity = new HttpEntity(headers);
+    String url = String.format("%s?SiteId=%s&WorkOrderId=%s", this.endpointUrl, siteId, workOrderId);
     ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, new HashMap<>());
     return response.getBody();
   }

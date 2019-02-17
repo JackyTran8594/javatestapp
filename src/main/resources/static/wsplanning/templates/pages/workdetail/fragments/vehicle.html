@@ -1,0 +1,64 @@
+<!-- Basic panel controls -->
+<div class="panel panel-white" ng-controller="VehicleCtrl">
+    <span ng-show="!isShow">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a class="btn btn-link btn-float has-text text-size-small" ng-click="$ctrl.openSearchVehicle('lg','')">
+                    <i class="icon-truck position-left myTitle"></i>
+                </a>
+                <small class="myTitle">{{WOVehicle.LicenseNo}}, {{WOVehicle.VIN}}, {{WOVehicle.Make}}, {{WOVehicle.Model}}</small>
+            </h6>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li ng-click="toogleVehicle()"><a ng-class="{'rotate-180': isShow == true}" data-action="collapse" data-popup="tooltip" title="Collapse"></a></li>
+                </ul>
+            </div>
+        </div>
+    </span>
+
+    <span ng-show="isShow">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <a class="btn btn-link btn-float has-text text-size-small" ng-click="$ctrl.openSearchVehicle('lg','')">
+                    <i class="icon-truck position-left myTitle"></i>
+                </a>
+                <small class="myTitle">{{WOVehicle.LicenseNo}}, {{WOVehicle.VIN}}, {{WOVehicle.Make}}, {{WOVehicle.Model}}</small>
+            </h6>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li ng-click="toogleVehicle()"><a ng-class="{'rotate-180': isShow == true}" data-action="collapse" data-popup="tooltip" title="Collapse"></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <form class="form-horizontal formValidate" name="contractFrm">
+                <!--Row 1-->
+                <div class="row">
+                    <!--NextMOTDate-->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{ 'FirstRegistrationDate' | translate }}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="CheckOutDate"  ng-model="WOVehicle.NextMOTDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--VIN-->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">{{ 'EngineNumber' | translate }}</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="VIN"  ng-model="WOVehicle.VIN">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end row 1-->
+            </form>
+        </div>
+
+    </span>
+</div>
+<!-- /basic panel controls -->

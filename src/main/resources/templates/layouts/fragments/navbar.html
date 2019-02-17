@@ -26,6 +26,7 @@
 
         <div class="navbar-right">
             <ul class="nav navbar-nav">
+                <li style="color: #371ace;margin-top: 15px;"><span>{{stamping}}</span></li>
                 <li style="display: none"><span class="currentLang" id="currentLang" th:data-currentLang="${#locale}"></span></li>
                 <li class="dropdown language-switch hidden-sm">
                     <a class="dropdown-toggle legitRipple" data-toggle="dropdown" aria-expanded="false">
@@ -35,7 +36,7 @@
 
                     <ul class="dropdown-menu" id="dropDownLang">
                         <li ng-repeat="item in lstLang" class="{{item.class}}">
-                            <a ng-click="changeLang(item)">
+                            <a ng-click="changeLang(item.lang)">
                                 <img ng-src="/assets/images/flags/{{item.Flag}}" alt="{{item.Name}}"> <span>{{item.Name}}</span></a>
                         </li>
                     </ul>
@@ -62,7 +63,6 @@
 
     <script type="text/javascript">
       $(document).ready(function () {
-        console.log("------navbar ready------");
 
 //        $.ajax({
 //          type: 'GET',
