@@ -1,11 +1,13 @@
-UserWebApp.controller('AllWorkOrdersCtrl', function ($scope, $rootScope, $locale, HttpService, $translate, $location, $state, $filter, $uibModal, CommonServices,typeWO) {
+UserWebApp.controller('AllWorkOrdersCtrl', function ($scope, $rootScope, $locale, HttpService, $translate, $timeout,$location, $state, $filter, $uibModal, CommonServices, typeWO) {
   $scope.typeWO = typeWO;
+
+  var EmployeeData = $("#EmployeeData").data("employee");
 
   $scope.lstAllData = [];
   $scope.lstData = [];
   $scope.lstSearch = [];
   $scope.totalElements = 0;
-
+  $scope.lstbtnCommon = JSON.parse(localStorage.getItem('info_common'));
   // $scope.params = {
   //   "department": "300",
   //   "trans": "W",
@@ -13,40 +15,43 @@ UserWebApp.controller('AllWorkOrdersCtrl', function ($scope, $rootScope, $locale
   //   "serv": "",
   // };
 
+  $scope.buttonType = function (name) {
+    var string = "app.main." + name;
+    $state.go(string, {'locale': $rootScope.lang, 'type': typeWO, 'action': name });
+  }
+
   $scope.params = {
-    "department": "",
+    "department": EmployeeData.DeptId,
     "trans": "",
     "visitReason": "",
     "receiver": "",
     "from": "",
     "to": "",
     "myWo": false,
-    "shiftId": "",
+    "shiftId": EmployeeData.ShiftId,
+    "skey": "",
   };
 
-  $scope.searchValue = '';
   $scope.limit = 20;
   $scope.page = 1;
 
   function reset() {
     $scope.params = {
-      "department": "",
+      "department": EmployeeData.DeptId,
       "trans": "",
       "visitReason": "",
       "receiver": "",
       "from": "",
       "to": "",
       "myWo": false,
-      "shiftId": ""
+      "shiftId": EmployeeData.ShiftId,
+      "skey": "",
     };
-    $scope.searchValue = '';
     $scope.limit = 20;
     $scope.page = 1;
   }
 
   // datepicker-vutt
-
-  console.log($locale);
 
   $scope.dateOptions = {
     formatYear: 'yy',
@@ -104,10 +109,9 @@ UserWebApp.controller('AllWorkOrdersCtrl', function ($scope, $rootScope, $locale
     common.spinner(true);
     //unScheduledWO, withSubcontractor, todayWO, allWO, withMOT, withTire, withBO, postponedWO, offers
 
-    console.log($scope.params);
     var params = {
       "ViewName": typeWO,
-      "skey": $scope.searchValue,
+      "skey": $scope.params.skey,
       "page": $scope.page,
       "limit": $scope.limit,
       "DeptId": $scope.params.department,
@@ -120,6 +124,16 @@ UserWebApp.controller('AllWorkOrdersCtrl', function ($scope, $rootScope, $locale
       "ToDate": $scope.params.to,
     };
 
+    HttpService.postData('/wo/getWO', params).then(function (response) {
+      $scope.lstData = response;
+      $scope.pageGo = $scope.page;
+      $scope.isShow = false;
+      common.spinner(false);
+    }, function error(response) {
+      console.log(response);
+      common.spinner(false);
+    });
+
     if (count) {
       HttpService.postData('/wo/countWO', params).then(function (response) {
         $scope.totalElements = response;
@@ -130,20 +144,9 @@ UserWebApp.controller('AllWorkOrdersCtrl', function ($scope, $rootScope, $locale
         common.spinner(false);
       });
     }
-
-    HttpService.postData('/wo/getWO', params).then(function (response) {
-      $scope.lstData = response;
-      $scope.pageGo = $scope.page;
-      $scope.isShow = false;
-      common.spinner(false);
-    }, function error(response) {
-      console.log(response);
-      common.spinner(false);
-    });
   }
 
   loadData(true);
-
 
   //<editor-fold desc="Paging & Search Port">
   $scope.$watch("page", function (newValue, oldValue) {
@@ -217,24 +220,115 @@ UserWebApp.controller('AllWorkOrdersCtrl', function ($scope, $rootScope, $locale
 
   //function viewDetail
   $scope.viewDetail = function (item) {
-    $state.go('app.main.workdetail', { 'id': item.WorkOrderId, 'type': typeWO });
+    $timeout(function() {
+      $state.go('app.main.workdetail', {
+        'locale': $rootScope.lang,
+        'id': item.WorkOrderId,
+        'type': typeWO,
+        'tab': 'job'
+      });
+    });
   }
 
-  $scope.newWorkorder = function () {
-    $state.go('app.main.newwo', { 'type': typeWO });
-  }
-
-  $scope.newOffer = function () {
-    $state.go('app.main.newoffer');
-  }
-
-  $scope.newBooking = function () {
-    $state.go('app.main.booking');
+  $scope.onRefresh = function () {
+    $state.reload();
   }
 
   $scope.isShow = false;
   $scope.toogleSearch = function () {
     $scope.isShow = !$scope.isShow;
+  }
+
+  $scope.resetSearch = function () {
+    $scope.params = {
+      "department": EmployeeData.DeptId,
+      "trans": "",
+      "visitReason": "",
+      "receiver": "",
+      "from": "",
+      "to": "",
+      "myWo": false,
+      "shiftId": EmployeeData.ShiftId,
+      "skey": "",
+    };
+    $scope.page = 1;
+    $scope.pageGo = 1;
+    loadData(true);
+  }
+
+  //openCamera
+  $scope.openCamera = function () {
+    var modalInstance = $uibModal.open({
+      animation: $ctrl.animationsEnabled,
+      templateUrl: '/wsplanning/templates/pages/scan_barcode.html',
+      controller: 'ScanBarcodeModalCtrl',
+      controllerAs: '$ctrl',
+      size: "full",
+      resolve: {
+
+      }
+    });
+
+    modalInstance.rendered.then(function () {
+      $rootScope.$broadcast("modalOpen", {});
+    });
+
+    modalInstance.result.then(function (value) {
+      if (value) {
+        $scope.params.skey = value;
+        $scope.doSearch();
+      }
+    }, function () {
+      if (Quagga){
+        Quagga.stop();
+      }
+      console.log('Modal dismissed at: ' + new Date());
+    });
+  }
+
+
+  $scope.openQRCode = function () {
+    console.log("----openQRCode----");
+    Instascan.Camera.getCameras().then(function (cameras) {
+
+      var modalInstance = $uibModal.open({
+        animation: $ctrl.animationsEnabled,
+        templateUrl: '/wsplanning/templates/pages/scan_qrcode.html',
+        controller: 'ScanQRcodeModalCtrl',
+        controllerAs: '$ctrl',
+        size: "lg",
+        resolve: {
+          cameras: function () {
+            return cameras;
+          }
+        }
+      });
+
+      modalInstance.rendered.then(function () {
+        $rootScope.$broadcast("modalOpenQR", {});
+      });
+
+      modalInstance.result.then(function (obj) {
+        console.log(obj);
+
+        if(obj.scanner){
+          obj.scanner.stop();
+        }
+
+        if (obj.code) {
+          $scope.params.skey = obj.code;
+          console.log("------------$scope.params.skey: " + $scope.params.skey);
+          $scope.doSearch();
+        }
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+
+    }).catch(function (e) {
+      common.notifyError("Cannot init camera!")
+      console.error(e);
+    });
+
   }
 
 });

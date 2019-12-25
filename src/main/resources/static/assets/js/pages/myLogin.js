@@ -25,6 +25,66 @@ function loadSite() {
   });
 }
 
+function loadAuth() {
+  $.ajax({
+    type: 'GET',
+    url: '/site/getMenuAuth',
+    dataType: 'json',
+    success: function (responseData, textStatus, jqXHR) {
+      console.log(responseData);
+      var lst_auth = responseData.auth;
+      var lst_name = responseData.menu;
+      var lst_tab = responseData.tab;
+      var lst_timeout = responseData.timeout;
+      var lst_common = responseData.common;
+      var lst_detail = responseData.detail;
+      var lst_icon_common = responseData.iconCommon;
+      var lst_icon_detail = responseData.iconDetail;
+      var barcode = responseData.barcode;
+      var jobHeader = responseData.jobHeader;
+
+      lst_auth.forEach(function (element) {
+        lst_name.forEach(function (item) {
+          if (element.name == item.name) {
+            element.icon = item.class;
+          }
+        })
+      });
+
+      
+      lst_common.forEach(function (element) {
+        lst_icon_common.forEach(function (item) {
+          if (element.name == item.name) {
+            element.icon = item.class;
+          }
+        })
+      });
+
+      
+      lst_detail.forEach(function (element) {
+        lst_icon_detail.forEach(function (item) {
+          if (element.name == item.name) {
+            element.icon = item.class;
+          }
+        })
+      });
+
+      localStorage.setItem('info_menu', JSON.stringify(lst_auth));
+      localStorage.setItem('info_tab', JSON.stringify(lst_tab));
+      localStorage.setItem('info_timeout', JSON.stringify(lst_timeout));
+      localStorage.setItem('info_common', JSON.stringify(lst_common));
+      localStorage.setItem('info_detail', JSON.stringify(lst_detail));
+      localStorage.setItem('info_barcode', JSON.stringify(barcode));
+      localStorage.setItem('info_css_jobHeader', JSON.stringify(jobHeader));
+
+    },
+    error: function (responseData, textStatus, errorThrown) {
+      console.log(responseData);
+      console.log(errorThrown);
+    }
+  })
+}
+
 function loadLang() {
   $.ajax({
     type: 'GET',
@@ -32,7 +92,7 @@ function loadLang() {
     dataType: 'json',
     success: function (responseData, textStatus, jqXHR) {
       var option = "";
-      localStorage.setItem('cultureInfo',JSON.stringify(responseData));
+      localStorage.setItem('cultureInfo', JSON.stringify(responseData));
 
 
       $.each(responseData, function (i, item) {
@@ -76,7 +136,7 @@ function onLogin() {
     //Set cookies
     eraseCookie("siteId");
     eraseCookie("language");
- 
+
     createCookie("siteId", $("#siteId").val(), 365);
     createCookie("language", $("#language").val(), 365);
 

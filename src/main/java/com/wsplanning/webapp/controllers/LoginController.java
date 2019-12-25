@@ -23,11 +23,8 @@ public class LoginController {
     public String login(HttpServletRequest request) {
         String token = (String) session.getAttribute(CustomAuthenticationProvider.SESSION_TOKEN);
         if (token != null && !StringUtils.isBlank(token)) {
-            return "redirect:/mechanic";
+            return "redirect:/";
         }
-        //String listSite = siteClient.getSites();
-//        String referrer = request.getHeader("Referer");
-//        request.getSession().setAttribute("url_prior_login", referrer);
         return "login";
     }
 }

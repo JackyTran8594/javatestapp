@@ -1,4 +1,4 @@
-<div ng-include="'/wsplanning/templates/pages/taskList/page-header.html'"></div>
+<div ng-include="'/wsplanning/templates/pages/tasklist/page-header.html'"></div>
 
 
 <!-- Page container -->
@@ -8,8 +8,13 @@
     <div class="page-content">
 
         <!-- Main content -->
-   
-        <!-- /main content -->
+        <div class="content-wrapper">
+
+            <div ng-include="'/wsplanning/templates/pages/tasklist/open.html'"></div>
+
+            <div ng-include="'/wsplanning/templates/pages/tasklist/close.html'"></div>
+
+        </div>
 
     </div>
     <!-- /page content -->

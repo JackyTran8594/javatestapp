@@ -1,12 +1,14 @@
 package com.wsplanning.webapp.controllers;
 
-import com.google.common.net.HttpHeaders;
 import com.wsplanning.webapp.clients.ASMasterClient;
 import com.wsplanning.webapp.clients.CustomerClient;
 import com.wsplanning.webapp.clients.EmployeesClient;
+import com.wsplanning.webapp.clients.NotificationClient;
 import com.wsplanning.webapp.clients.StampingClient;
 import com.wsplanning.webapp.clients.VehiclesClient;
+import com.wsplanning.webapp.dto.NotificationDTO;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -29,7 +31,7 @@ public class CommonController extends BaseController {
   private Logger logger = LoggerFactory.getLogger(CommonController.class);
 
   @Autowired
-  protected ASMasterClient siteClient;
+  protected ASMasterClient asMasterClient;
 
   @Autowired
   protected StampingClient stampingClient;
@@ -44,6 +46,9 @@ public class CommonController extends BaseController {
   protected VehiclesClient vehiclesClient;
 
   @Autowired
+  protected NotificationClient notificationClient;
+
+  @Autowired
   protected HttpSession session;
 
   @Autowired
@@ -55,7 +60,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getAll")
   public ResponseEntity getAll() {
     try {
-      String rtn = siteClient.getSites();
+      String rtn = asMasterClient.getSites();
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -65,7 +70,7 @@ public class CommonController extends BaseController {
   @GetMapping("/language/getAll")
   public ResponseEntity getLanguage() {
     try {
-      String getLanguages = siteClient.getLanguages();
+      String getLanguages = asMasterClient.getLanguages();
       JSONArray rtn = new JSONArray();
       JSONArray jsonArray = new JSONArray(getLanguages);
       JSONObject jsonObj = null;
@@ -126,7 +131,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getTransactionTypes")
   public ResponseEntity getTransactionTypes() {
     try {
-      String rtn = siteClient.getTransactionTypes(getSiteId());
+      String rtn = asMasterClient.getTransactionTypes(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -136,7 +141,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getDepartments")
   public ResponseEntity getDepartments() {
     try {
-      String rtn = siteClient.getDepartments(getSiteId());
+      String rtn = asMasterClient.getDepartments(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -146,7 +151,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getJobTypes")
   public ResponseEntity getJobTypes() {
     try {
-      String rtn = siteClient.getJobTypes(getSiteId());
+      String rtn = asMasterClient.getJobTypes(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -156,7 +161,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getJobCats")
   public ResponseEntity getJobCats() {
     try {
-      String rtn = siteClient.getJobCats(getSiteId());
+      String rtn = asMasterClient.getJobCats(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -166,7 +171,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getPayers")
   public ResponseEntity getPayers() {
     try {
-      String rtn = siteClient.getPayers(getSiteId());
+      String rtn = asMasterClient.getPayers(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -176,7 +181,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getShifts")
   public ResponseEntity getShifts() {
     try {
-      String rtn = siteClient.getShifts(getSiteId());
+      String rtn = asMasterClient.getShifts(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -186,7 +191,17 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getVisitReasons")
   public ResponseEntity getVisitReasons() {
     try {
-      String rtn = siteClient.getVisitReasons(getSiteId());
+      String rtn = asMasterClient.getVisitReasons(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
+
+  @GetMapping("/site/getMechanics")
+  public ResponseEntity getMechanics() {
+    try {
+      String rtn = employeesClient.getMechanics(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -197,6 +212,38 @@ public class CommonController extends BaseController {
   public ResponseEntity getServiceAdvisors() {
     try {
       String rtn = employeesClient.getServiceAdvisors(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
+
+  @GetMapping("/site/getEmployees")
+  public ResponseEntity getEmployees() {
+    try {
+      String rtn = employeesClient.getMechanics(getSiteId());
+      if (rtn.trim().length() > 0) {
+        if (StringUtils.endsWith(rtn, "]")) {
+          rtn = StringUtils.removeEndIgnoreCase(rtn, "]");
+        }
+      }
+
+      String getServiceAdvisors = employeesClient.getServiceAdvisors(getSiteId());
+      if (getServiceAdvisors.trim().length() > 0) {
+        if (StringUtils.startsWith(getServiceAdvisors, "[")) {
+          getServiceAdvisors = StringUtils.removeStartIgnoreCase(getServiceAdvisors, "[");
+        }
+        if (StringUtils.endsWith(getServiceAdvisors, "]")) {
+          getServiceAdvisors = StringUtils.removeEndIgnoreCase(getServiceAdvisors, "]");
+        }
+      }
+
+      if (rtn.trim().length() > 0) {
+        rtn += "," + getServiceAdvisors + "]";
+      } else {
+        rtn += "[" + getServiceAdvisors + "]";
+      }
+
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -216,7 +263,7 @@ public class CommonController extends BaseController {
   @GetMapping("/site/getChargeCats")
   public ResponseEntity getChargeCats() {
     try {
-      String rtn = siteClient.getChargeCats(getToken());
+      String rtn = asMasterClient.getChargeCats(getSiteId());
       return new ResponseEntity<>(rtn, HttpStatus.OK);
     } catch (Exception ex) {
       return parseException(ex);
@@ -234,7 +281,8 @@ public class CommonController extends BaseController {
   }
 
   @GetMapping("/site/getCustomers")
-  public ResponseEntity getCustomers(@RequestParam(name = "skey") String skey, @RequestParam(name = "custNo") String custNo) {
+  public ResponseEntity getCustomers(@RequestParam(name = "skey") String skey,
+      @RequestParam(name = "custNo") String custNo) {
     try {
       String rtn = customerClient.getCustomers(skey, custNo);
       return new ResponseEntity<>(rtn, HttpStatus.OK);
@@ -243,4 +291,207 @@ public class CommonController extends BaseController {
     }
   }
 
+  @PostMapping("/site/customer")
+  public ResponseEntity customer(@RequestBody Map<String, String> params) {
+    try {
+      String rtn = customerClient.customer(params);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+
+  // @PostMapping("/site/notification")
+  // public ResponseEntity notification(@RequestBody NotificationDTO params)
+  // {
+  // try {
+  // String rtn = employeesClient.customer(params);
+  // return new ResponseEntity<>(rtn, HttpStatus.OK);
+  // } catch (Exception e) {
+  // return parseException(e);
+  // //TODO: handle exception
+  // }
+  // }
+
+  @GetMapping("/site/stampingCode")
+  public ResponseEntity stampingCode() {
+    try {
+      String rtn = asMasterClient.getStampingCode(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+
+  @GetMapping("/site/getTeams")
+  public ResponseEntity getTeams() {
+    try {
+      String rtn = employeesClient.getTeams(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+
+  // notification
+  @GetMapping("/site/getNotification")
+  public ResponseEntity getNotification(@RequestParam(name = "smanid") String params) {
+    try {
+      String rtn = notificationClient.getListNotification(params);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+
+  @GetMapping("/site/getCountNotification")
+  public ResponseEntity getCountNotification(@RequestParam(name = "smanid") String params) {
+    try {
+      String rtn = notificationClient.getCount(params);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+
+  @PostMapping("/site/postNotification")
+  public ResponseEntity postNotification(@RequestBody NotificationDTO data) {
+    try {
+      data.SiteId = getSiteId();
+      String rtn = notificationClient.postNotification(getSiteId(), getToken(), data);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+
+  @PostMapping("/site/markNotification")
+  public ResponseEntity markNotification(@RequestBody NotificationDTO data) {
+    try {
+      String rtn = notificationClient.markNotification(getToken(), data);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+  // end
+
+  @GetMapping("/site/getMenuAuth")
+  public ResponseEntity getMenuAuth() {
+    try {
+      String rtn = asMasterClient.loadProperty().toString();
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      System.out.println(e);
+      return parseException(e);
+      // TODO: handle exception
+    }
+  }
+
+  @GetMapping("/site/getCallCenterDB")
+  public ResponseEntity getCallCenterDB() {
+    try {
+      String rtn = asMasterClient.getCallCenterDB();
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @GetMapping("/site/getCallCenterSites/{db}")
+  public ResponseEntity getCallCenterSites(@PathVariable("db") String db) {
+    try {
+      String rtn = asMasterClient.getCallCenterSites(db);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @GetMapping("/site/getCallCenterTaskType")
+  public ResponseEntity getCallCenterTaskType() {
+    try {
+      String rtn = asMasterClient.getCallCenterTaskType();
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @PostMapping("/site/getTextPredict")
+  public ResponseEntity getTextPredict(@RequestBody Map<String, String>  params) {
+    try {
+      String rtn = asMasterClient.getTextPredict(params);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      //TODO: handle exception
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @GetMapping("/site/getTextPredict2")
+  public ResponseEntity getTextPredict2(@RequestParam Map<String, String>  params) {
+    try {
+      String rtn = asMasterClient.getTextPredict(params);
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      //TODO: handle exception
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @GetMapping("/site/getTaskTypes")
+  public ResponseEntity getTaskTypes() {
+    try {
+      String rtn = asMasterClient.getTaskTypes(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @GetMapping("/site/getTaskSeries")
+  public ResponseEntity getTaskSeries() {
+    try {
+      String rtn = asMasterClient.getTaskSeries(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @GetMapping("/site/getSuppliers")
+  public ResponseEntity getSuppliers() {
+    try {
+      String rtn = asMasterClient.getSuppliers();
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      System.out.println(e);
+      return parseException(e);
+    }
+  }
+
+  @GetMapping("/site/getWOSort")
+  public ResponseEntity getWOSort() {
+    try {
+      String rtn = asMasterClient.getWOSort(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception e) {
+      return parseException(e);
+    }
+  }
 }

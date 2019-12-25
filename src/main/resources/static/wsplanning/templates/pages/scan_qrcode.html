@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only" ng-click="cancel()">Close</span>
+    </button>
+    <h4>{{title}}</h4>
+</div>
+
+<div class="modal-body">
+    <div class="panel panel-flat">
+        <div class="panel-body">
+            <div class="well border-left-danger border-left-lg">
+                <section class="cameras">
+                    <h2>Cameras {{cameras.length}}</h2>
+                    <ul>
+                        <li ng-show="cameras.length === 0" class="empty">No cameras found</li>
+                        <li ng-repeat="camera in cameras">
+                            <span ng-if="camera.id == activeCameraId" title="formatName(camera.name)" class="active">{{ formatName(camera.name) }}</span>
+                            <span ng-if="camera.id != activeCameraId" title="formatName(camera.name)">
+                <a ng-click="selectCamera(camera)">{{ formatName(camera.name) }}</a>
+              </span>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            <div class="well border-left-danger border-left-lg">
+                <video id="preview"></video>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-footer position-right">
+    <button type="button" ng-click="save()" ng-disabled="disabledButton == true"
+        class="btn btn-icon btn-primary btnSubmit">
+        <i class="icon-checkmark3"></i>{{ 'btnSave' | translate }}</span>
+    </button>
+    <a class="btn btn-default" ng-click="cancel()">{{ 'btnCancel' | translate }}</a>
+</div>

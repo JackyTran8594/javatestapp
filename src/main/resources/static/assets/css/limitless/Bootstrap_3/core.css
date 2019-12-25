@@ -3605,7 +3605,7 @@ select[multiple].input-group-xs > .input-group-btn > .btn {
     padding-left: 0;
     padding-right: 0;
     background: url("../../../../../../global_assets/images/logo_icon_light.png") no-repeat center center;
-    background-size: auto 16px;
+    background-size: auto 32px;
     float: none;
     display: block;
   }
@@ -3735,8 +3735,9 @@ select[multiple].input-group-xs > .input-group-btn > .btn {
   padding-bottom: 92px;
 }
 .navbar-brand > img {
-  margin-top: 2px;
-  height: 16px;
+  margin-top: -5px;
+  height: 32px;
+  margin-left:15px;
 }
 .navbar-nav {
   margin: 0;

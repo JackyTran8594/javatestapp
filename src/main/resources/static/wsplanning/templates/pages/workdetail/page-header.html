@@ -7,7 +7,7 @@
 
             <ul class="breadcrumb breadcrumb-caret position-right">
                 <li><a href="/">{{ 'breadcrumbHome' | translate }}</a></li>
-                <li ng-if="type == 'allWO'"><a ui-sref="app.main.workorder()">{{ 'breadcrumbWorkOrder' | translate }}</a></li>
+                <li ng-if="type == 'allWO'"><a ui-sref="app.main.allwork()">{{ 'breadcrumbWorkOrder' | translate }}</a></li>
                 <li ng-if="type == 'todayWO'"><a ui-sref="app.main.todaywork()">{{ 'breadcrumbTodayWork' | translate }}</a></li>
                 <li ng-if="type == 'offers'"><a ui-sref="app.main.offer()">{{ 'breadcrumbOffer' | translate }}</a></li>
                 <li ng-if="type == 'postponedWO'"><a ui-sref="app.main.postponedwork()">{{ 'breadcrumbPostponedWO' | translate }}</a></li>
@@ -16,10 +16,43 @@
                 <li ng-if="type == 'withMOT'"><a ui-sref="app.main.workmot()">{{ 'breadcrumbWithMOT' | translate }}</a></li>
                 <li ng-if="type == 'withSubcontractor'"><a ui-sref="app.main.worksub()">{{ 'breadcrumbWithSubcontractor' | translate }}</a></li>
                 <li ng-if="type == 'withTire'"><a ui-sref="app.main.worktire()">{{ 'breadcrumbWithTire' | translate }}</a></li>
-                <li ng-if="isNew" class="active">{{ 'breadcrumbWorkNew' | translate }}</li>
-                <li ng-if="!isNew" class="active">{{ 'breadcrumbWorkDetail' | translate }}</li>
+                <li ng-if="isNew == 'wo'" class="active">{{ 'breadcrumbWorkNew' | translate }}</li>
+				<li ng-if="isNew == 'newoffer'" class="active">{{ 'breadcrumbNewOffer' | translate }}</li>
+				<li ng-if="isNew == 'booking'" class="active">{{ 'breadcrumbNewBooking' | translate }}</li>
+                <li ng-if="!isNew" class="active">{{workOrderNo}}</li>
+                <li ng-if="!isNew" class="active">{{cusInfo.lastName}}</li>
             </ul>
         </div>
+
+
+        <div class="heading-elements">
+            <div class="heading-btn-group">
+                <button class="btn btn-icon btn-danger" ng-show="WorkOrder.WorkOrderId" ng-click="openModalTasklist()">
+                    <i class="icon-plus2"></i><span>{{ 'btnAddTask' | translate }}</span>
+                </button>
+
+                <button type="button" ng-show="tabActive == 'header'" ng-disabled="pristine == false && headerFrm.modified == false"
+                        id="btnSubmitFrm" class="btn btn-icon btn-primary btnSubmit" ng-click="saveForm(tabActive)">
+                    <i class="icon-checkmark3"></i>{{ 'btnSave' | translate }}</span>
+                </button>
+
+                <button type="button" ng-show="tabActive == 'job'" ng-disabled="WorkOrder.WOJobs == null"
+                        class="btn btn-icon btn-primary btnSubmit" ng-click="saveForm(tabActive)">
+                    <i class="icon-checkmark3"></i>{{ 'btnSave' | translate }}</span>
+                </button>
+
+                <button type="button" ng-show="tabActive == 'planning'"
+                        class="btn btn-icon btn-primary btnSubmit" id="thuyetlv" ng-click="saveForm(tabActive)">
+                    <i class="icon-checkmark3"></i>{{ 'btnSave' | translate }}</span>
+                </button>
+
+                <button type="button" ng-show="tabActive == 'checkin'"
+                        class="btn btn-icon btn-primary btnSubmit" ng-click="saveForm(tabActive)">
+                    <i class="icon-checkmark3"></i>{{ 'btnSave' | translate }}</span>
+                </button>
+            </div>
+        </div>
+
     </div>
 </div>
 <!-- /page header -->

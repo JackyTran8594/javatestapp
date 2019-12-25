@@ -2,11 +2,6 @@ UserWebApp.controller('VehicleCtrl', function ($scope, $rootScope, HttpService, 
   $scope.WorkOrderId = $stateParams.id;
   $scope.type = $stateParams.type;
 
-
-  console.log($scope.WorkOrderId);
-  console.log($scope.type);
-
-
   $scope.isShow = false;
 
   $scope.WOVehicle = {};
@@ -39,12 +34,23 @@ UserWebApp.controller('VehicleCtrl', function ($scope, $rootScope, HttpService, 
       }
     });
 
+    modalInstance.rendered.then(function () {
+      $rootScope.$broadcast("openSearchVehicle", {});
+    });
+
     modalInstance.result.then(function (selectedItem) {
+      // console.log(selectedItem);
       $ctrl.selected = selectedItem;
     }, function () {
       console.log('Modal dismissed at: ' + new Date());
     });
   };
 
+
+  $rootScope.$on('chooseVehicle', function (event, obj) {
+    console.log(obj.item);
+    $scope.WOVehicle = obj.item;
+    $scope.WorkOrder.WOVehicle = $scope.WOVehicle;
+  });
 
 });

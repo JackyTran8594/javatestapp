@@ -719,7 +719,7 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
         // Reset state.escape
         state.escape = false;
 
-        // Reset state.taskList
+        // Reset state.tasklist
         state.taskList = false;
 
         // Reset state.code

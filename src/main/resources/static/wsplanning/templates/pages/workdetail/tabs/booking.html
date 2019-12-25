@@ -1,0 +1,48 @@
+<!-- Page container -->
+<div class="page-container" ng-controller="BookingCtrl" ng-init="loadData()">
+
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Panel content -->
+            <div class="panel panel-flat" style="margin-bottom: 0px;">
+                <div class="panel-body" style="padding: 0 20px;">
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="panel panel-flat">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div id='calendarBook'></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <div class="pull-right">
+                        <button type="button" id="btnSubmitPlanning" class="btn btn-icon btn-primary btnSubmit" ng-click="onSubmitForm()">
+                            <i class="icon-checkmark3"></i>{{ 'btnSave' | translate }}</span>
+                        </button>
+                        <button type="button" class="btn btn-link "
+                                data-ng-click="onCancel()">{{ 'btnCancel' | translate}}
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <!-- /main content -->
+
+
+    </div>
+    <!-- /page content -->
+
+</div>
+<!-- /page container -->

@@ -21,9 +21,6 @@ public class BaseController {
   private Logger logger = LoggerFactory.getLogger(BaseController.class);
 
 
-  public static final String MECHANIC_PAGE = "mechanic/index";
-  public static final String MECHANIC_PAGE_FORM = "mechanic/form";
-
   public ResponseEntity parseException(Exception ex) {
     JsonObject response = new JsonObject();
     if (ex instanceof UnknownHttpStatusCodeException) {
@@ -66,14 +63,19 @@ public class BaseController {
 
   public String getSiteId() {
     String site = (String) session.getAttribute(CustomAuthenticationProvider.SESSION_SITEID);
-    System.out.println("---site: " + site);
+//    System.out.println("---site: " + site);
     return site;
   }
 
   public String getToken() {
     String token = (String) session.getAttribute(CustomAuthenticationProvider.SESSION_TOKEN);
-    System.out.println("---token: " + token);
+//    System.out.println("---token: " + token);
     return token;
+  }
+
+  public String getSManId() {
+    String rtn = (String) session.getAttribute(CustomAuthenticationProvider.SESSION_SMANID);
+    return rtn;
   }
 
   public Map<String, String> addParamSiteId(Map<String, String> params) {

@@ -2,11 +2,6 @@ UserWebApp.controller('CustomerCtrl', function ($scope, $rootScope, HttpService,
   $scope.WorkOrderId = $stateParams.id;
   $scope.type = $stateParams.type;
 
-
-  console.log($scope.WorkOrderId);
-  console.log($scope.type);
-
-
   $scope.isShow = false;
 
   $scope.WOCustomer = {};
@@ -39,6 +34,10 @@ UserWebApp.controller('CustomerCtrl', function ($scope, $rootScope, HttpService,
       }
     });
 
+    modalInstance.rendered.then(function () {
+      $rootScope.$broadcast("openSearchVehicle", {});
+    });
+
     modalInstance.result.then(function (selectedItem) {
       $ctrl.selected = selectedItem;
     }, function () {
@@ -46,5 +45,19 @@ UserWebApp.controller('CustomerCtrl', function ($scope, $rootScope, HttpService,
     });
   };
 
+  $rootScope.$on('chooseCustomer', function (event, obj) {
+    $scope.WOCustomer = obj.item;
+    $scope.WorkOrder.WOCustomer = $scope.WOCustomer;
+  });
+
+  
+  $rootScope.$on('choosePayerCustomer', function (event, obj) {
+    $scope.WOCustomer = obj.item;
+    // $scope.WOContract = obj.item;
+    $scope.WorkOrder.WOCustomer = $scope.WOCustomer;
+    // $scope.WorkOrder.WOContract = $scope.WOCustomer;
+    
+    console.log(obj);
+  });
 
 });

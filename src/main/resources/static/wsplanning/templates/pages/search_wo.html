@@ -1,13 +1,18 @@
 <!--SEARCH-->
 <div class="panel panel-white">
-    <div class="panel-heading" ng-click="toogleSearch()">
-        <h6 class="panel-title">
+    <div class="panel-heading">
+        <h6 class="panel-title"  ng-click="toogleSearch()">
             <i class="icon-search4 position-left" ng-click="toogleSearch()"></i>
-            <small>Search</small>
+            <small>{{ 'search' | translate }}</small> {{testObj[testName]}}
         </h6>
         <div class="heading-elements">
             <ul class="icons-list">
-                <li ng-click="toogleSearch()"><a ng-class="{'rotate-180': isShow == true}"></a></li>
+                <li ng-click="resetSearch()" title="{{ 'resetSearch' | translate }}">
+                    <i class="icon icon-cross" ng-click="resetSearch()"></i>
+                </li>
+                <li ng-click="toogleSearch()" title="{{ 'toogleSearch' | translate }}">
+                    <i class="icon icon-ctrl" ng-class="{'rotate-180': isShow == false}"></i>
+                </li>
             </ul>
         </div>
     </div>
@@ -15,23 +20,25 @@
     <div class="panel-body" ng-show="isShow">
         <form class="form-horizontal form-search row">
             <!--<div class="row">-->
-                <!--<div class="col-xs-6 col-md-3">-->
-                    <!--<input type="file" accept="image/*" capture="camera" />-->
-                <!--</div>-->
+            <!--<div class="col-xs-6 col-md-3">-->
+            <!--<input type="file" accept="image/*" capture="camera" />-->
+            <!--</div>-->
             <!--</div>-->
 
             <div class="row">
                 <div class="col-xs-6 col-md-3">
                     <div class="col-md-12">
                         <div class="input-group">
-                            <input type="text" class="form-control" ng-model="searchValue"
-                                   placeholder="{{ 'searchWo' | translate }}"
-                                   code="13" dl-key-code="doSearch();">
+                            <input type="text" class="form-control" ng-model="params.skey"
+                                placeholder="{{ 'searchWo' | translate }}" code="13" dl-key-code="doSearch();" autofocus>
                             <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="openCamera()">
-											<i class="icon-camera"></i>
-											</button>
-                                        </span>
+                                <button type="button" class="btn btn-default" ng-click="openCamera()">
+                                    <i class="icon-barcode2"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" ng-click="openQRCode()">
+                                    <i class="icon-qrcode"></i>
+                                </button>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -41,7 +48,7 @@
                         <label class="control-label col-xs-4">{{ 'trans' | translate }}</label>
                         <div class="col-xs-8">
                             <select class="form-control" ng-model="params.trans"
-                                    ng-options="item.Id as item.Name for item in lstTrans">
+                                ng-options="item.Id as item.Name for item in lstTrans">
                             </select>
                         </div>
                     </div>
@@ -52,7 +59,7 @@
                         <label class="control-label col-xs-4">{{ 'department' | translate }}</label>
                         <div class="col-xs-8">
                             <select class="form-control" ng-model="params.department"
-                                    ng-options="item.Id as item.Name for item in lstDepartment">
+                                ng-options="item.Id as item.Name for item in lstDepartment">
                             </select>
                         </div>
                     </div>
@@ -63,11 +70,13 @@
                         <label class="control-label col-xs-4">{{ 'visitReason' | translate }}</label>
                         <div class="col-xs-8">
                             <select class="form-control" ng-model="params.visitReason"
-                                    ng-options="item.Id as item.Name for item in lstVisitReason">
+                                ng-options="item.Id as item.Name for item in lstVisitReason">
                             </select>
                         </div>
                     </div>
                 </div>
+
+
             </div>
 
             <div class="row">
@@ -76,7 +85,7 @@
                         <label class="control-label col-xs-4">{{ 'serv' | translate }}</label>
                         <div class="col-xs-8">
                             <select class="form-control" ng-model="params.receiver"
-                                    ng-options="item.SmanId as item.Name for item in lstServ">
+                                ng-options="item.SmanId as item.Name for item in lstServ">
                             </select>
                         </div>
                     </div>
@@ -87,7 +96,7 @@
                         <label class="control-label col-xs-4">{{ 'shiftId' | translate }}</label>
                         <div class="col-xs-8">
                             <select class="form-control" ng-model="params.shiftId"
-                                    ng-options="item.Id as item.Name for item in lstShift">
+                                ng-options="item.Id as item.Name for item in lstShift">
                             </select>
                         </div>
                     </div>
@@ -102,15 +111,15 @@
                                 <!-- <input type="text" class="form-control datepicker" id="startDate" placeholder="Pick a date&hellip;" ng-model="params.from"> -->
 
                                 <input type="text" class="form-control datepicker" uib-datepicker-popup="dd-MMMM-yyyy"
-                                       placeholder="Pick a date"
-                                       is-open="popupFromDate.opened" datepicker-options="dateOptions"
-                                       ng-required="true" show-button-bar="false" ng-model="params.from"/>
+                                    placeholder="Pick a date" is-open="popupFromDate.opened"
+                                    datepicker-options="dateOptions" ng-required="true" show-button-bar="true"
+                                    ng-model="params.from" />
                                 <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="openFromDate()">
+                                    <button type="button" class="btn btn-default" ng-click="openFromDate()">
 
-											<i class="icon-calendar"></i>
-											</button>
-                                        </span>
+                                        <i class="icon-calendar"></i>
+                                    </button>
+                                </span>
 
                                 <!-- <span class="input-group-addon"><i class="icon-calendar"></i></span> -->
                             </div>
@@ -127,22 +136,26 @@
                                 <!-- <span class="input-group-addon"><i class="icon-calendar"></i></span> -->
 
                                 <input type="text" class="form-control datepicker" uib-datepicker-popup="dd-MMMM-yyyy"
-                                       placeholder="Pick a date"
-                                       is-open="popupToDate.opened" datepicker-options="dateOptions"
-                                       ng-required="true" show-button-bar="false" ng-model="params.to"/>
+                                    placeholder="Pick a date" is-open="popupToDate.opened"
+                                    datepicker-options="dateOptions" ng-required="true" show-button-bar="false"
+                                    ng-model="params.to" />
                                 <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" ng-click="openToDate()">
+                                    <button type="button" class="btn btn-default" ng-click="openToDate()">
 
-											<i class="icon-calendar"></i>
-											</button>
-                                        </span>
+                                        <i class="icon-calendar"></i>
+                                    </button>
+                                </span>
 
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-2">
+
+            </div>
+
+            <div class="row">
+                <div class="col-xs-2 col-md-2">
                     <div class="form-group">
                         <label style="padding-top: 12px;padding-left: 10px;">
                             <input type="checkbox" ng-checked="params.myWo" ng-model="params.myWo">
@@ -151,7 +164,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-1">
+                <div class="col-xs-1  col-md-1">
                     <button type="button" ng-click="doSearch()" class="btn btn-icon btn-default"><i
                             class="icon-search4"></i></button>
                 </div>

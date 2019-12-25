@@ -3,10 +3,19 @@ package com.wsplanning.webapp.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.wsplanning.webapp.controllers.CommonController;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -99,6 +108,48 @@ public class Utils {
       ex.printStackTrace();
       return "";
     }
+  }
+
+
+  public static byte[] readFileInResource(String fileName) throws IOException {
+    ClassLoader classLoader = Utils.class.getClassLoader();
+    InputStream stream = classLoader.getResourceAsStream(fileName);
+    if (stream == null) {
+      logger.warn(String.format("File: %s not exits!", fileName));
+      stream = Utils.class.getResourceAsStream(fileName);
+    }
+    if (stream == null) {
+      logger.error(String.format("File: %s not exits!", fileName));
+      return null;
+    }
+    return IOUtils.toByteArray(classLoader.getResourceAsStream(fileName));
+  }
+
+  public static String encodeFileToBase64AtResource2(String fileName) throws IOException {
+    ClassLoader classLoader = Utils.class.getClassLoader();
+    InputStream stream = classLoader.getResourceAsStream(fileName);
+    if (stream == null) {
+      logger.warn(String.format("File: %s not exits!", fileName));
+      stream = Utils.class.getResourceAsStream(fileName);
+    }
+    if (stream == null) {
+      logger.error(String.format("File: %s not exits!", fileName));
+      return "";
+    }
+    byte[] encoded = Base64.encodeBase64(IOUtils.toByteArray(classLoader.getResourceAsStream(fileName)));
+    return new String(encoded, StandardCharsets.UTF_8);
+  }
+
+  public static String encodeFileToBase64AtResource(String fileName) throws IOException {
+    Resource resourceFile = new ClassPathResource("classpath:" + fileName);
+    byte[] encoded = Base64.encodeBase64(IOUtils.toByteArray(resourceFile.getInputStream()));
+    return new String(encoded, StandardCharsets.UTF_8);
+  }
+
+  public static String encodeFileToBase64Binary(String fileName) throws IOException {
+    File file = new File(fileName);
+    byte[] encoded = Base64.encodeBase64(FileUtils.readFileToByteArray(file));
+    return new String(encoded, StandardCharsets.UTF_8);
   }
 
   public static void main(String[] args) {

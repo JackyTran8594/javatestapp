@@ -12,8 +12,13 @@ public class HomeController {
 
     @GetMapping("/")
     public String index(Model model) {
-//        return "redirect:/mechanic";
         return "layouts/layout";
+    }
+
+
+    @GetMapping("/test")
+    public String test(Model model) {
+        return "layouts/test";
     }
 
     @GetMapping("/403")

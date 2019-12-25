@@ -1,5 +1,9 @@
 UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, HttpService, $translate, $location, $state, $filter, $uibModal, $window, CommonServices) {
 
+
+
+  console.log($scope.typeWO);
+
   $scope.lstDepartment = [];
   $scope.lstVisitReason = [];
   $scope.lstChargeCats = [];
@@ -19,7 +23,7 @@ UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, Htt
 
   $ctrl.vehicle = function (size, item) {
     var modalInstance = $uibModal.open({
-      animation:  $ctrl.animationsEnabled ,
+      animation: $ctrl.animationsEnabled,
       templateUrl: '/wsplanning/templates/pages/newWO/modal/vehicle-form.html',
       controller: 'VehicleModalCtrl',
       controllerAs: '$ctrl',
@@ -27,8 +31,12 @@ UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, Htt
       backdrop: 'static',
       resolve: {
         item: function () {
-          return $scope.WOVehicle;
+          return $scope.typeWO;
+          // return $scope.WOVehicle;
         }
+        // typeWO: function (params) {
+        //   return $scope.typeWO;
+        // }
       }
     });
 
@@ -53,6 +61,10 @@ UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, Htt
           return $scope.WOCustomer;
         }
       }
+    });
+
+    modalInstance.rendered.then(function () {
+      $rootScope.$broadcast("openSearchCustomer", {});
     });
 
     modalInstance.result.then(function (selectedItem) {
@@ -88,7 +100,7 @@ UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, Htt
 
 
 
- 
+
   console.log($locale);
 
   $scope.dateOptions = {
@@ -110,7 +122,7 @@ UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, Htt
   }
 
 
-  
+
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'dd-MMMM-yyyy HH:mm:ss'];
   $scope.format = $scope.formats[4];
   console.log($scope.format);
@@ -153,10 +165,8 @@ UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, Htt
 
   function loadCombo() {
     CommonServices.getDepartments().then(function (data) {
-      console.log(data);
       $scope.lstDepartment = data
       $scope.target.department = data[0].Id;
-      console.log($scope.target.department);
     });
     CommonServices.getVisitReasons().then(function (data) {
       $scope.lstVisitReason = data;
@@ -188,10 +198,14 @@ UserWebApp.controller('newOfferCtrl', function ($scope, $rootScope, $locale, Htt
 });
 
 
-UserWebApp.controller('VehicleModalCtrl', function ($scope, $rootScope, $locale, HttpService, $translate,
-  $location, $state, $filter, $uibModal, $uibModalInstance, CommonServices, item) {
+UserWebApp.controller('VehicleModalCtrl', function ($scope, $rootScope, $timeout,
+  $state, $uibModal, $uibModalInstance, CommonServices, $cookies) {
 
+  var type = '';
   var $ctrl = this;
+  // console.log(item);
+
+  $scope.siteId = $cookies.get('siteId');
 
   $ctrl.cancel = function () {
     $uibModalInstance.dismiss('cancel');
@@ -202,8 +216,18 @@ UserWebApp.controller('VehicleModalCtrl', function ($scope, $rootScope, $locale,
   function loadData(skey) {
     console.log(skey);
     CommonServices.getVehicles(skey).then(function (data) {
-      console.log(data);
+
       $scope.lstVehicles = data;
+      // angular.forEach(data, function (v, k) {
+      //   angular.forEach(v.OpenWorkOrders, function (value, key) {
+      //     console.log({
+      //       license: v.LicenseNo,
+      //       id: value.SiteId,
+      //       no: value.WorkOrderNo,
+      //       ref: value.Reference
+      //     });
+      //   });
+      // });
     }, function (error) {
       console.log(error);
     });
@@ -215,17 +239,106 @@ UserWebApp.controller('VehicleModalCtrl', function ($scope, $rootScope, $locale,
     loadData($scope.skey)
   }
 
-  $scope.doPick = function (selectedItem) {
-    item = selectedItem;
-    console.log(item);
-    $uibModalInstance.close(item);
+  $scope.openCamera = function () {
+    var modalInstance = $uibModal.open({
+      animation: $ctrl.animationsEnabled,
+      templateUrl: '/wsplanning/templates/pages/scan_barcode.html',
+      controller: 'ScanBarcodeModalCtrl',
+      controllerAs: '$ctrl',
+      size: "full",
+      resolve: {
+
+      }
+    });
+
+    modalInstance.rendered.then(function () {
+      $rootScope.$broadcast("modalOpen", {});
+    });
+
+    modalInstance.result.then(function (value) {
+      if (value) {
+        $scope.skey = value;
+        $scope.doSearch();
+      }
+    }, function () {
+      console.log('Modal dismissed at: ' + new Date());
+    });
   }
+
+  $scope.openQRCode = function () {
+    console.log("----openQRCode----");
+    Instascan.Camera.getCameras().then(function (cameras) {
+
+      var modalInstance = $uibModal.open({
+        animation: $ctrl.animationsEnabled,
+        templateUrl: '/wsplanning/templates/pages/scan_qrcode.html',
+        controller: 'ScanQRcodeModalCtrl',
+        controllerAs: '$ctrl',
+        size: "lg",
+        resolve: {
+          cameras: function () {
+            return cameras;
+          }
+        }
+      });
+
+      modalInstance.rendered.then(function () {
+        $rootScope.$broadcast("modalOpenQR", {});
+      });
+
+      modalInstance.result.then(function (obj) {
+        console.log(obj);
+
+        if(obj.scanner){
+          obj.scanner.stop();
+        }
+
+        if (obj.code) {
+          $scope.skey = obj.code;
+          $scope.doSearch();
+        }
+      }, function () {
+        console.log('Modal dismissed at: ' + new Date());
+      });
+
+    }).catch(function (e) {
+      common.notifyError("Cannot init camera!")
+      console.error(e);
+    });
+
+  }
+
+  $scope.doPick = function (selectedItem) {
+    $uibModalInstance.close(selectedItem);
+  }
+
+  $scope.reLoadWithWO = function (obj) {
+    $uibModalInstance.dismiss('cancel');
+    $timeout(function () {
+      $state.go('app.main.workdetail', {
+        'locale': $rootScope.lang,
+        'id': obj.WorkOrderId,
+        'type': 'allWO',
+        'tab': 'job'
+      });
+    });
+  }
+
+  //ThuyetLV
+  $rootScope.$on('openSearchVehicle', function () {
+    try {
+      $(".firstFocus").focus();
+    } catch (e) {
+      console.error(e);
+    }
+
+  });
 
 })
 
 
 UserWebApp.controller('CustomerModalCtrl', function ($scope, $rootScope, $locale, HttpService, $translate,
-  $location, $state, $filter, $uibModal, $uibModalInstance, CommonServices, item) {
+  $location, $state, $filter, $uibModal, $uibModalInstance, CommonServices) {
 
 
 
@@ -242,6 +355,7 @@ UserWebApp.controller('CustomerModalCtrl', function ($scope, $rootScope, $locale
 
   function loadData(skey, custNo) {
     CommonServices.getCustomers(skey, custNo).then(function (data) {
+      console.log(data);
       $scope.lstCustomers = data;
     })
   }
@@ -254,16 +368,24 @@ UserWebApp.controller('CustomerModalCtrl', function ($scope, $rootScope, $locale
   loadData($scope.skey, $scope.custNo);
 
   $scope.doPick = function (selectedItem) {
-    item = selectedItem;
-    console.log(item);
-    $uibModalInstance.close(item);
+    $uibModalInstance.close(selectedItem);
   }
+
+  //ThuyetLV
+  $rootScope.$on('openSearchCustomer', function () {
+    try {
+      $(".firstFocus").focus();
+    } catch (e) {
+      console.error(e);
+    }
+
+  });
 
 })
 
 
 UserWebApp.controller('ContactModalCtrl', function ($scope, $rootScope, $locale, HttpService, $translate,
-  $location, $state, $filter, $uibModal, $uibModalInstance, CommonServices, item) {
+  $location, $state, $filter, $uibModal, $uibModalInstance, CommonServices, WorkOrderService, item) {
 
 
 
@@ -284,18 +406,34 @@ UserWebApp.controller('ContactModalCtrl', function ($scope, $rootScope, $locale,
     })
   }
 
+  function loadCustomer(item) {
+    common.spinner(true);
+    WorkOrderService.customer(item).then(function (res) {
+      $scope.lstCustomers = res.data;
+      common.spinner(false);
+    })
+  }
+
 
   $scope.doSearch = function () {
     loadData($scope.skey, $scope.custNo)
   }
 
-  loadData($scope.skey, $scope.custNo);
+  loadCustomer(item);
 
   $scope.doPick = function (selectedItem) {
-    item = selectedItem;
-    console.log(item);
-    $uibModalInstance.close(item);
+    $uibModalInstance.close(selectedItem);
   }
+
+  //ThuyetLV
+  $rootScope.$on('openSearchContact', function () {
+    try {
+      $(".firstFocus").focus();
+    } catch (e) {
+      console.error(e);
+    }
+
+  });
 
 })
 
