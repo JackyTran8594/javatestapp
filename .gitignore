@@ -1,7 +1,10 @@
 .idea/
 target
 *.iml
-.vscode/
-.project
 .settings/
 .classpath
+.project
+.vscode/
+bower_components
+node_modules
+.DS_Store
