@@ -39,8 +39,7 @@ public class WokOrderClient {
     this.endpointUrl = apiEndpointUrl + "/api/WorkOrders";
   }
 
-  public String countWO(String token, String siteId, Map<String, String> params) {
-    String viewName = params.get("ViewName");
+  private HttpHeaders generateHearderWO(String token,Map<String, String> params){
     String skey = params.get("skey");
     String page = params.get("page");
     String limit = params.get("limit");
@@ -54,10 +53,18 @@ public class WokOrderClient {
     String ServDateFrom = params.get("FromDate");
     String ServDateTo = params.get("ToDate");
     String shiftId = params.get("shiftId");
+    String sortByField = params.get("SortByField");
+    String sortDesc = params.get("SortDesc");
+
+
+    //Filter
+    String workOrderStatus = params.get("WorkOrderStatus");
+    String subStatus = params.get("SubStatus");
+    String visitReasonCode = params.get("VisitReasonCode");
+    String onlyToday = params.get("OnlyToday");
 
     HttpHeaders headers = new HttpHeaders();
     headers.set("Token", token);
-
     if (StringUtils.isNotBlank(skey)) {
       headers.set("skey", Base64.getEncoder().encodeToString(skey.getBytes()));
     }
@@ -72,9 +79,17 @@ public class WokOrderClient {
     if (StringUtils.isNotBlank(shiftId)) {
       headers.set("ShiftId", shiftId);
     }
+
     if (StringUtils.isNotBlank(DeptId)) {
       headers.set("DeptId", DeptId);
     }
+    if (StringUtils.isNotBlank(sortByField)) {
+      headers.set("SortByField", sortByField);
+    }
+    if (StringUtils.isNotBlank(sortDesc)) {
+      headers.set("SortDesc", sortDesc);
+    }
+
     if (StringUtils.isNotBlank(Receiver)) {
       headers.set("Receiver", Receiver);
     }
@@ -93,8 +108,6 @@ public class WokOrderClient {
     if (StringUtils.isNotBlank(LoadAttachmentData) && "true".equalsIgnoreCase(LoadAttachmentData)) {
       headers.set("LoadAttachmentData", "true");
     }
-
-    // yyyy.MM.dd
     if (StringUtils.isNotBlank(ServDateFrom)) {
       headers.set("ServDateFrom", Utils.formateDateAPI(ServDateFrom));
     }
@@ -102,73 +115,42 @@ public class WokOrderClient {
       headers.set("ServDateTo", Utils.formateDateAPI(ServDateTo));
     }
 
+    //Filter
+    if (StringUtils.isNotBlank(workOrderStatus)) {
+      headers.set("WorkOrderStatus", workOrderStatus);
+    }
+    if (StringUtils.isNotBlank(subStatus)) {
+      headers.set("SubStatus", subStatus);
+    }
+    if (StringUtils.isNotBlank(visitReasonCode)) {
+      headers.set("VisitReasonCode", visitReasonCode);
+    }
+
+    if (StringUtils.isNotBlank(onlyToday) && "true".equalsIgnoreCase(onlyToday)) {
+      headers.set("OnlyToday", "true");
+    }else{
+      headers.set("OnlyToday", "false");
+    }
+    return headers;
+  }
+
+  public String countWO(String token, String siteId, Map<String, String> params) {
+    String viewName = params.get("ViewName");
+
+    HttpHeaders headers = generateHearderWO(token,params);
+
     HttpEntity entity = new HttpEntity(headers);
+
     String url = String.format("%s?SiteId=%s&ViewName=%s&getCountOnly=%s", this.endpointUrl, siteId, viewName, "true");
     ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, new HashMap<>());
     return response.getBody();
   }
 
   public String getWO(String token, String siteId, Map<String, String> params) {
+
     String viewName = params.get("ViewName");
-    String skey = params.get("skey");
-    String page = params.get("page");
-    String limit = params.get("limit");
-    String DeptId = params.get("DeptId");
-    String Receiver = params.get("Receiver");
-    String TransactionType = params.get("TransactionType");
-    String VisitReasonCode = params.get("VisitReasonCode");
-    String MyWO = params.get("MyWO");
-    String LoadAttachment = params.get("LoadAttachment");
-    String LoadAttachmentData = params.get("LoadAttachmentData");
-    String ServDateFrom = params.get("FromDate");
-    String ServDateTo = params.get("ToDate");
-    String shiftId = params.get("shiftId");
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Token", token);
-    if (StringUtils.isNotBlank(skey)) {
-      headers.set("skey", Base64.getEncoder().encodeToString(skey.getBytes()));
-    }
-
-    if (StringUtils.isNotBlank(limit)) {
-      headers.set("PageCount", limit);
-    }
-    if (StringUtils.isNotBlank(page)) {
-      headers.set("Page", page);
-    }
-
-    if (StringUtils.isNotBlank(shiftId)) {
-      headers.set("ShiftId", shiftId);
-    }
-
-    if (StringUtils.isNotBlank(DeptId)) {
-      headers.set("DeptId", DeptId);
-    }
-
-    if (StringUtils.isNotBlank(Receiver)) {
-      headers.set("Receiver", Receiver);
-    }
-    if (StringUtils.isNotBlank(TransactionType)) {
-      headers.set("TransactionType", TransactionType);
-    }
-    if (StringUtils.isNotBlank(VisitReasonCode)) {
-      headers.set("VisitReasonCode", VisitReasonCode);
-    }
-    if (StringUtils.isNotBlank(MyWO) && "true".equalsIgnoreCase(MyWO)) {
-      headers.set("MyWO", "true");
-    }
-    if (StringUtils.isNotBlank(LoadAttachment) && "true".equalsIgnoreCase(LoadAttachment)) {
-      headers.set("LoadAttachment", "true");
-    }
-    if (StringUtils.isNotBlank(LoadAttachmentData) && "true".equalsIgnoreCase(LoadAttachmentData)) {
-      headers.set("LoadAttachmentData", "true");
-    }
-    if (StringUtils.isNotBlank(ServDateFrom)) {
-      headers.set("ServDateFrom", Utils.formateDateAPI(ServDateFrom));
-    }
-    if (StringUtils.isNotBlank(ServDateTo)) {
-      headers.set("ServDateTo", Utils.formateDateAPI(ServDateTo));
-    }
+    HttpHeaders headers = generateHearderWO(token,params);
 
     HttpEntity entity = new HttpEntity(headers);
     String url = String.format("%s?SiteId=%s&ViewName=%s", this.endpointUrl, siteId, viewName);
@@ -288,73 +270,9 @@ public class WokOrderClient {
 
   public String getGridWO(String token, String siteId, Map<String, String> params) {
     String viewName = params.get("ViewName");
-    String skey = params.get("skey");
-    String page = params.get("page");
-    String limit = params.get("limit");
-    String DeptId = params.get("DeptId");
-    String Receiver = params.get("Receiver");
-    String TransactionType = params.get("TransactionType");
-    String VisitReasonCode = params.get("VisitReasonCode");
-    String MyWO = params.get("MyWO");
-    String LoadAttachment = params.get("LoadAttachment");
-    String LoadAttachmentData = params.get("LoadAttachmentData");
-    String ServDateFrom = params.get("FromDate");
-    String ServDateTo = params.get("ToDate");
-    String shiftId = params.get("shiftId");
-    String sortByField = params.get("SortByField");
-    String sortDesc = params.get("SortDesc");
 
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Token", token);
-    if (StringUtils.isNotBlank(skey)) {
-      headers.set("skey", Base64.getEncoder().encodeToString(skey.getBytes()));
-    }
+    HttpHeaders headers = generateHearderWO(token,params);
 
-    if (StringUtils.isNotBlank(limit)) {
-      headers.set("PageCount", limit);
-    }
-    if (StringUtils.isNotBlank(page)) {
-      headers.set("Page", page);
-    }
-
-    if (StringUtils.isNotBlank(shiftId)) {
-      headers.set("ShiftId", shiftId);
-    }
-
-    if (StringUtils.isNotBlank(DeptId)) {
-      headers.set("DeptId", DeptId);
-    }
-    if (StringUtils.isNotBlank(sortByField)) {
-      headers.set("SortByField", sortByField);
-    }
-    if (StringUtils.isNotBlank(sortDesc)) {
-      headers.set("SortDesc", sortDesc);
-    }
-
-    if (StringUtils.isNotBlank(Receiver)) {
-      headers.set("Receiver", Receiver);
-    }
-    if (StringUtils.isNotBlank(TransactionType)) {
-      headers.set("TransactionType", TransactionType);
-    }
-    if (StringUtils.isNotBlank(VisitReasonCode)) {
-      headers.set("VisitReasonCode", VisitReasonCode);
-    }
-    if (StringUtils.isNotBlank(MyWO) && "true".equalsIgnoreCase(MyWO)) {
-      headers.set("MyWO", "true");
-    }
-    if (StringUtils.isNotBlank(LoadAttachment) && "true".equalsIgnoreCase(LoadAttachment)) {
-      headers.set("LoadAttachment", "true");
-    }
-    if (StringUtils.isNotBlank(LoadAttachmentData) && "true".equalsIgnoreCase(LoadAttachmentData)) {
-      headers.set("LoadAttachmentData", "true");
-    }
-    if (StringUtils.isNotBlank(ServDateFrom)) {
-      headers.set("ServDateFrom", Utils.formateDateAPI(ServDateFrom));
-    }
-    if (StringUtils.isNotBlank(ServDateTo)) {
-      headers.set("ServDateTo", Utils.formateDateAPI(ServDateTo));
-    }
     headers.set("LoadRows", "true");
     headers.set("LoadAllResource", "true");
 

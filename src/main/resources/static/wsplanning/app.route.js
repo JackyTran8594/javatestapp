@@ -338,9 +338,24 @@ UserWebApp.config(function ($stateProvider, $urlRouterProvider, $locationProvide
             controller: "GridWorkOrderCtrl",
             templateUrl: '/wsplanning/templates/pages/gridWorkOrder/index.html',
             resolve: {
+                listDataFilter: function ($q, CommonFactory) {
+                    var deferred = $q.defer();
+                    $q.all([
+                        CommonFactory.doQuery('getWorkOrderStatuses'),
+                        CommonFactory.doQuery('getSubStatuses')
+                    ]).then(function (data) {
+                        console.log(data);
+                        deferred.resolve(data);
+
+                        // $scope.lstWOStatus = data[0];
+                        // $scope.lstSubState = data[1];
+                    });
+                    return deferred.promise;
+                },
                 loadMyCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load(["scancode", "gridWorkOrder"]);
-                }], listField: function ($http, $q, $translate) {
+                }],
+                listField: function ($http, $q, $translate) {
                     var listField = [
                         {Id: "WorkOrderStatus", Name: $translate.instant('WorkOrderStatus'), order: false},
                         {Id: "SubStatus", Name: $translate.instant('SubStatus'), order: false},
@@ -392,34 +407,12 @@ UserWebApp.config(function ($stateProvider, $urlRouterProvider, $locationProvide
                             }
                         }
 
-
-                        console.log(listField);
-
                         deferred.resolve(listField);
                     }, function errorCallback(response) {
                         console.error(response);
                         deferred.reject([]);
                     });
                     return deferred.promise;
-
-                    // return [{
-                    //     key: "WorkOrderId",
-                    //     name: "WorkOrder Id",
-                    //     order: true
-                    // }, {
-                    //     key: "WorkOrderNo",
-                    //     name: "WorkOrder No",
-                    //     order: true
-                    // }, {
-                    //     key: "Reference",
-                    //     name: "Reference"
-                    // }, {
-                    //     key: "DeptId",
-                    //     name: "DeptId"
-                    // }, {
-                    //     key: "TimeBarText",
-                    //     name: "TimeBar Text"
-                    // }];
                 }
             }
         })

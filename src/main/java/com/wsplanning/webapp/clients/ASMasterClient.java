@@ -330,4 +330,14 @@ public class ASMasterClient {
         String url = String.format("%s?command=getWOSort&param1=%s", this.endpointUrl, siteId);
         return restTemplate.getForObject(url, String.class);
     }
+
+    public String getWorkOrderStatuses(String siteId) {
+        String url = String.format("%s?command=getWorkOrderStatuses&param1=%s", this.endpointUrl, siteId);
+        return restTemplate.getForObject(url, String.class);
+    }
+
+    public String getSubStatuses(String siteId) {
+        String url = String.format("%s?command=getSubStatuses&param1=%s", this.endpointUrl, siteId);
+        return restTemplate.getForObject(url, String.class);
+    }
 }

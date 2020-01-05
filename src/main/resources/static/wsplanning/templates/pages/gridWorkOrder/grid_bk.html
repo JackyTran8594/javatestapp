@@ -1,0 +1,87 @@
+
+
+
+        <table>
+            <thead>
+            <tr>
+                <th>Country
+                    <div class="dropdown" style="float: right">
+                        <button class="dropdown-toggle filterdropdown" ng-class="{active:XLfilters.dict['Country'].isActive}" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span></button>
+                        <div class="dropdown-menu prop" aria-labelledby="btnSearchBatch" style="width: 250px; padding: 15px;">
+                            <div class="text-right">
+                                <span class="filterlink" ng-click="clearAll('Country')">Clear All</span> | <spanclass="filterlink" data-dismiss="modal">Close(X)</span>
+                            </div>
+                            <form>
+                                <input type="text" class="form-control input-sm" ng-model="XLfilters.dict['Country'].searchText" placeholder="Filter by Country" />
+                                <div>
+                                    <span class="filterlink" ng-click="markAll('Country',true)">Select All</span> | <span class="filterlink" ng-click="markAll('Country',false)">Select None</span>
+                                </div>
+                                <div class="options">
+                                    <ul style="list-style-type: none; padding: 0">
+                                        <li ng-repeat="item in XLfilters.dict['Country'].options">
+                                            <input id="countryOption{{$index}}" type="checkbox" ng-change="checkChange()" ng-model="XLfilters.dict['Country'].dict[item.title].checked" />&nbsp;<label for="countryOption{{$index}}">{{item.title}}</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </th>
+                <th>City
+                    <div class="dropdown" style="float: right">
+                        <button class="dropdown-toggle filterdropdown" ng-class="{active:XLfilters.dict['City'].isActive}" type="button" data-toggle="dropdown"><span class="glyphicon glyphicon-filter"></span></button>
+                        <div class="dropdown-menu prop" aria-labelledby="btnSearchBatch" style="width: 250px; padding: 15px;">
+                            <div class="text-right">
+                                <span class="filterlink" ng-click="clearAll('City')">Clear All</span> | <span class="filterlink" data-dismiss="modal">Close(X)</span>
+                            </div>
+                            <form>
+                                <input type="text" class="form-control input-sm" ng-model="XLfilters.dict['City'].searchText" placeholder="Filter by City" />
+                                <div>
+                                    <span class="filterlink" ng-click="markAll('City',true)">Select All</span> | <span class="filterlink" ng-click="markAll('City',false)">Select None</span>
+                                </div>
+                                <div class="options">
+                                    <ul style="list-style-type: none; padding: 0">
+                                        <li ng-repeat="item in XLfilters.dict['City'].options">
+                                            <input id="cityOption{{$index}}" type="checkbox" ng-change="checkChange()" ng-model="XLfilters.dict['City'].dict[item.title].checked" />&nbsp;<label for="cityOption{{$index}}">{{item.title}}</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </th>
+                <th>Name</th>
+            </tr>
+            </thead>
+
+            <!--BODY-->
+            <tbody>
+            <tr ng-repeat="emp in XLfilters.results">
+                <td>{{emp.Country}}</td>
+                <td>{{emp.City}}</td>
+                <td>{{emp.Name}}</td>
+            </tr>
+            </tbody>
+        </table>
+
+
+<style type="text/css">
+    .filterdropdown{
+        background: #eee;
+        border: 1px solid #bbb;
+        color: #bbb;
+        border-radius: 2px;
+        font-size: 14px;
+        line-height: 14px;
+    }
+    .filterdropdown.active{
+        color: #005b9c;
+    }
+    a.filterlink{
+        font-size: 12px;
+    }
+    .options {
+        height: 150px;
+        overflow-y: scroll;
+    }
+</style>

@@ -4,6 +4,8 @@ UserWebApp
     this.transactionTypes = [];
     this.departments = [];
     this.visitReasons = [];
+    this.workOrderStatuses = [];
+    this.subStatuses = [];
     this.serviceAdvisors = [];
     this.jobTypes = [];
     this.jobCats = [];
@@ -309,6 +311,7 @@ UserWebApp
       }
       return d.promise;
     };
+
     this.getVisitReasons = function () {
       var d = $q.defer();
       if (!this.visitReasons || this.visitReasons.length <= 0) {
@@ -377,6 +380,37 @@ UserWebApp
       return d.promise;
     }
 
+    this.getWorkOrderStatuses = function () {
+      var d = $q.defer();
+      if (!this.workOrderStatuses || this.workOrderStatuses.length <= 0) {
+        HttpService.getData('/site/getWorkOrderStatuses', {}).then(function (response) {
+          response.unshift({ "Id": "", "Name": $translate.instant('pleaseSelect') });
+          this.workOrderStatuses = response;
+          d.resolve(response);
+        }, function error(response) {
+          d.reject();
+        });
+      } else {
+        d.resolve(this.workOrderStatuses);
+      }
+      return d.promise;
+    };
+
+    this.getSubStatuses = function () {
+      var d = $q.defer();
+      if (!this.subStatuses || this.subStatuses.length <= 0) {
+        HttpService.getData('/site/getSubStatuses', {}).then(function (response) {
+          response.unshift({ "Id": "", "Name": $translate.instant('pleaseSelect') });
+          this.subStatuses = response;
+          d.resolve(response);
+        }, function error(response) {
+          d.reject();
+        });
+      } else {
+        d.resolve(this.subStatuses);
+      }
+      return d.promise;
+    };
 
     this.loadData = function () {
       var d = $q.defer();

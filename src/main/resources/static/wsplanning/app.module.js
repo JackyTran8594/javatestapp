@@ -18,6 +18,7 @@ var UserWebApp = angular.module('UserWebApp', [
     'iosDblclick',
     'bmSignaturePad',
     'colorpicker.module',
+    'ngHandsontable'
 ]);
 
 

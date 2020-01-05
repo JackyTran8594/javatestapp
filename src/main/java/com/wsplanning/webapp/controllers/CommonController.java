@@ -494,4 +494,24 @@ public class CommonController extends BaseController {
       return parseException(e);
     }
   }
+
+  @GetMapping("/site/getWorkOrderStatuses")
+  public ResponseEntity getWorkOrderStatuses() {
+    try {
+      String rtn = asMasterClient.getWorkOrderStatuses(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
+
+  @GetMapping("/site/getSubStatuses")
+  public ResponseEntity getSubStatuses() {
+    try {
+      String rtn = asMasterClient.getSubStatuses(getSiteId());
+      return new ResponseEntity<>(rtn, HttpStatus.OK);
+    } catch (Exception ex) {
+      return parseException(ex);
+    }
+  }
 }
